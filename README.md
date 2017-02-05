@@ -1,12 +1,12 @@
 # Textbox
 [![Travis CI Build Status](https://api.travis-ci.org/LPGhatguy/textbox.svg?branch=master)](https://travis-ci.org/LPGhatguy/textbox)
 
-Textbox is a library used to manage text box state. It is meant to be used as the input manager for any Lua UI toolkit.
+Textbox is a library used to manage text box state. It is meant to be used as the input manager for any LÖVE UI widget or toolkit.
 
 Textbox is based around the lifecycle of `InputContext` objects. One `InputContext` object is intended to map to one text input field. While the input has focus, you should call the `textinput` and `keypressed` methods on the `InputContext` object when appropriate. These correspond to the arguments and semantics of the LÖVE API.
 
 ## Installation
-Textbox is built to target **LÖVE 0.10.0** and newer, but has no specific dependence on it.
+Textbox requires **LÖVE 0.10.0** or newer.
 
 Put the `textbox` folder into your project and require it.
 
@@ -19,10 +19,10 @@ Textbox provides these features:
 - Backspace and forward-delete
 - Home/End keys
 - Select all
-- Copy/cut/paste
+- Copy/Cut/Paste
 
-## Usage
-See the `demo` folder for a more detailed example.
+## Sample Usage
+See the `demo` folder for more detailed examples.
 
 ```lua
 local textbox = require("textbox")
