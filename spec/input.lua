@@ -18,7 +18,7 @@ describe("basic input", function()
 		context:insert("a")
 		assert.equal("a", context.value)
 
-		context.cursor = 0
+		context:setCursor(0)
 		context:insert("b")
 		assert.equal("ba", context.value)
 

@@ -16,7 +16,7 @@ end
 local demo
 
 while (true) do
-	local input = io.read()
+	local input = 2 --io.read()
 
 	if (input == "q") then
 		love.event.push("quit")

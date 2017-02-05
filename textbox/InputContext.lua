@@ -1,6 +1,11 @@
 local InputContext = {
-	prototype = {}
+	prototype = {},
+	platform = nil
 }
+
+if (love) then
+	InputContext.platform = love.system.getOS()
+end
 
 --[[
 	Creates a new InputContext with the given text, which defaults to an empty
@@ -12,6 +17,7 @@ function InputContext:new(value)
 	local new = setmetatable({
 		value = value,
 		cursor = value:len(),
+		selectionEnd = value:len(),
 		onUpdate = nil
 	}, {
 		__index = InputContext.prototype
@@ -24,9 +30,25 @@ end
 	Internal method to trigger the onUpdate event.
 ]]
 function InputContext.prototype:_triggerUpdate()
+	if (self._updating) then
+		return
+	end
+
+	self._updating = true
+
 	if (self.onUpdate) then
 		self:onUpdate()
 	end
+
+	self._updating = false
+end
+
+function InputContext.prototype:_isMetaDown()
+	if (InputContext.platform == "OS X") then
+		return love.keyboard.isDown("lgui", "gui")
+	end
+
+	return love.keyboard.isDown("lctrl", "rctrl")
 end
 
 --[[
@@ -45,13 +67,45 @@ function InputContext.prototype:keypressed(key)
 	elseif (key == "delete") then
 		self:forwardDelete()
 	elseif (key == "left") then
+		local selection = self.selectionEnd
 		self:moveCursor(-1)
+
+		if (love.keyboard.isDown("lshift", "rshift")) then
+			self.selectionEnd = selection
+		end
 	elseif (key == "right") then
+		local selection = self.selectionEnd
 		self:moveCursor(1)
+
+		if (love.keyboard.isDown("lshift", "rshift")) then
+			self.selectionEnd = selection
+		end
 	elseif (key == "home") then
+		local selection = self.selectionEnd
 		self:moveCursorHome()
+
+		if (love.keyboard.isDown("lshift", "rshift")) then
+			self.selectionEnd = selection
+		end
 	elseif (key == "end") then
+		local selection = self.selectionEnd
 		self:moveCursorEnd()
+
+		if (love.keyboard.isDown("lshift", "rshift")) then
+			self.selectionEnd = selection
+		end
+	elseif (self:_isMetaDown()) then
+		if (key == "a") then
+			self:selectAll()
+		elseif (key == "c") then
+			love.system.setClipboardText(self:getSelection())
+		elseif (key == "x") then
+			love.system.setClipboardText(self:getSelection())
+			self:backspace()
+		elseif (key == "v") then
+			local text = love.system.getClipboardText()
+			self:insert(text)
+		end
 	end
 end
 
@@ -59,25 +113,44 @@ end
 	Inserts the given text at the current cursor position.
 ]]
 function InputContext.prototype:insert(text)
-	local before = self.value:sub(1, self.cursor)
-	local after = self.value:sub(self.cursor + 1)
+	local min = math.min(self.cursor, self.selectionEnd)
+	local max = math.max(self.cursor, self.selectionEnd)
+
+	local before = self.value:sub(1, min)
+	local after = self.value:sub(max + 1)
 
 	self.value = before .. text .. after
-	self.cursor = self.cursor + text:len()
+	self:setCursor(min + text:len())
 
 	self:_triggerUpdate()
+end
+
+--[[
+	Returns the currently selected text
+]]
+function InputContext.prototype:getSelection()
+	local min = math.min(self.cursor, self.selectionEnd)
+	local max = math.max(self.cursor, self.selectionEnd)
+
+	return self.value:sub(min, max)
 end
 
 --[[
 	Equivalent to pressing the 'backspace' key.
 ]]
 function InputContext.prototype:backspace()
-	local newCursor = math.max(0, self.cursor - 1)
-	local before = self.value:sub(1, newCursor)
-	local after = self.value:sub(self.cursor + 1)
+	local min = math.min(self.cursor, self.selectionEnd)
+	local max = math.max(self.cursor, self.selectionEnd)
+
+	if (min == max) then
+		min = math.max(0, min - 1)
+	end
+
+	local before = self.value:sub(1, min)
+	local after = self.value:sub(max + 1)
 
 	self.value = before .. after
-	self.cursor = newCursor
+	self:setCursor(min)
 
 	self:_triggerUpdate()
 end
@@ -86,10 +159,18 @@ end
 	Equivalent to pressing the 'delete' key.
 ]]
 function InputContext.prototype:forwardDelete()
-	local before = self.value:sub(1, self.cursor)
-	local after = self.value:sub(self.cursor + 2)
+	local min = math.min(self.cursor, self.selectionEnd)
+	local max = math.max(self.cursor, self.selectionEnd)
+
+	if (min == max) then
+		max = max + 1
+	end
+
+	local before = self.value:sub(1, min)
+	local after = self.value:sub(max + 1)
 
 	self.value = before .. after
+	self:setCursor(min)
 
 	self:_triggerUpdate()
 end
@@ -98,14 +179,14 @@ end
 	Moves the cursor to the beginning of the line.
 ]]
 function InputContext.prototype:moveCursorHome()
-	self:moveCursor(-math.huge)
+	self:setCursor(-math.huge)
 end
 
 --[[
 	Moves the cursor for the end of the line.
 ]]
 function InputContext.prototype:moveCursorEnd()
-	self:moveCursor(math.huge)
+	self:setCursor(math.huge)
 end
 
 --[[
@@ -114,9 +195,23 @@ end
 function InputContext.prototype:moveCursor(x)
 	x = x or 0
 
-	self.cursor = math.max(0, math.min(#self.value, self.cursor + x))
+	self:setCursor(self.cursor + x)
+end
 
-	self:_triggerUpdate()
+--[[
+	Sets the cursor to the given position.
+]]
+function InputContext.prototype:setCursor(x)
+	self.cursor = math.max(0, math.min(#self.value, x))
+	self.selectionEnd = self.cursor
+end
+
+--[[
+	Selects all text in the text box.
+]]
+function InputContext.prototype:selectAll()
+	self:moveCursorEnd()
+	self.selectionEnd = 0
 end
 
 return setmetatable(InputContext, {

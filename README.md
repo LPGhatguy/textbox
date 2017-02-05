@@ -14,9 +14,12 @@ Put the `textbox` folder into your project and require it.
 Textbox provides these features:
 
 - Text entry
+- Selection
 - Cursor movement
 - Backspace and forward-delete
 - Home/End keys
+- Select all
+- Copy/cut/paste
 
 ## Usage
 See the `demo` folder for a more detailed example.
@@ -40,11 +43,6 @@ end
 ```
 
 ## TODO
-- Tests
 - Explicit UTF-8 support
 - IME support
-- Selection support
 - Multiline editing
-- Shortcuts
-	- Select all
-	- Cut, Copy, Paste
