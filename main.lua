@@ -3,7 +3,8 @@ local textbox = require("textbox")
 local demos = {
 	"basic",
 	"cursor",
-	"callback"
+	"callback",
+	"console"
 }
 
 print("Enter a number, or press 'q' to quit:")

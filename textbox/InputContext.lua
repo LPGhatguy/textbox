@@ -55,6 +55,9 @@ function InputContext.prototype:keypressed(key)
 	end
 end
 
+--[[
+	Inserts the given text at the current cursor position.
+]]
 function InputContext.prototype:insert(text)
 	local before = self.value:sub(1, self.cursor)
 	local after = self.value:sub(self.cursor + 1)
@@ -91,10 +94,16 @@ function InputContext.prototype:forwardDelete()
 	self:_triggerUpdate()
 end
 
+--[[
+	Moves the cursor to the beginning of the line.
+]]
 function InputContext.prototype:moveCursorHome()
 	self:moveCursor(-math.huge)
 end
 
+--[[
+	Moves the cursor for the end of the line.
+]]
 function InputContext.prototype:moveCursorEnd()
 	self:moveCursor(math.huge)
 end
