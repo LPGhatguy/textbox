@@ -2,6 +2,10 @@ local InputContext = {
 	prototype = {}
 }
 
+--[[
+	Creates a new InputContext with the given text, which defaults to an empty
+	string.
+]]
 function InputContext:new(value)
 	value = value or ""
 
@@ -16,12 +20,18 @@ function InputContext:new(value)
 	return new
 end
 
+--[[
+	Internal method to trigger the onUpdate event.
+]]
 function InputContext.prototype:_triggerUpdate()
 	if (self.onUpdate) then
 		self:onUpdate()
 	end
 end
 
+--[[
+	Call this method when receiving text from the user.
+]]
 function InputContext.prototype:textinput(text)
 	local before = self.value:sub(1, self.cursor)
 	local after = self.value:sub(self.cursor + 1)
@@ -32,6 +42,9 @@ function InputContext.prototype:textinput(text)
 	self:_triggerUpdate()
 end
 
+--[[
+	Call this method when the user presses a key.
+]]
 function InputContext.prototype:keypressed(key)
 	if (key == "backspace") then
 		self:backspace()
@@ -41,9 +54,16 @@ function InputContext.prototype:keypressed(key)
 		self:moveCursor(-1)
 	elseif (key == "right") then
 		self:moveCursor(1)
+	elseif (key == "home") then
+		self:moveCursor(-math.huge)
+	elseif (key == "end") then
+		self:moveCursor(math.huge)
 	end
 end
 
+--[[
+	Equivalent to pressing the 'backspace' key.
+]]
 function InputContext.prototype:backspace()
 	local before = self.value:sub(1, self.cursor - 1)
 	local after = self.value:sub(self.cursor + 1)
@@ -54,6 +74,9 @@ function InputContext.prototype:backspace()
 	self:_triggerUpdate()
 end
 
+--[[
+	Equivalent to pressing the 'delete' key.
+]]
 function InputContext.prototype:forwardDelete()
 	local before = self.value:sub(1, self.cursor)
 	local after = self.value:sub(self.cursor + 2)
@@ -63,6 +86,9 @@ function InputContext.prototype:forwardDelete()
 	self:_triggerUpdate()
 end
 
+--[[
+	Moves the cursor by the specified amount.
+]]
 function InputContext.prototype:moveCursor(x)
 	x = x or 0
 
