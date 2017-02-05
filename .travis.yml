@@ -21,4 +21,4 @@ install:
   - luarocks install luacov-coveralls
 
 script:
-  - busted -p .lua -m "`pwd`/?/init.lua" spec
+  - busted -p .lua -m "`pwd`/?/init.lua" --verbose spec
