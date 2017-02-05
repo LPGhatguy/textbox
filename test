@@ -1,0 +1,3 @@
+#!/bin/sh
+
+busted -p .lua -m "`pwd`/?/init.lua" spec

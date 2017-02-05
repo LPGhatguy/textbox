@@ -8,6 +8,14 @@ Textbox is built to target **LÖVE 0.10.0** and newer, but has no specific depen
 
 Put the `textbox` folder into your project and require it.
 
+## Features
+Textbox provides these features:
+
+- Text entry
+- Cursor movement
+- Backspace and forward-delete
+- Home/End keys
+
 ## Usage
 See the `demo` folder for a more detailed example.
 
@@ -32,6 +40,7 @@ end
 ## TODO
 - Tests
 - Explicit UTF-8 support
+- IME support
 - Selection support
 - Multiline editing
 - Shortcuts

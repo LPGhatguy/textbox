@@ -33,13 +33,7 @@ end
 	Call this method when receiving text from the user.
 ]]
 function InputContext.prototype:textinput(text)
-	local before = self.value:sub(1, self.cursor)
-	local after = self.value:sub(self.cursor + 1)
-
-	self.value = before .. text .. after
-	self.cursor = self.cursor + text:len()
-
-	self:_triggerUpdate()
+	self:insert(text)
 end
 
 --[[
@@ -55,21 +49,32 @@ function InputContext.prototype:keypressed(key)
 	elseif (key == "right") then
 		self:moveCursor(1)
 	elseif (key == "home") then
-		self:moveCursor(-math.huge)
+		self:moveCursorHome()
 	elseif (key == "end") then
-		self:moveCursor(math.huge)
+		self:moveCursorEnd()
 	end
+end
+
+function InputContext.prototype:insert(text)
+	local before = self.value:sub(1, self.cursor)
+	local after = self.value:sub(self.cursor + 1)
+
+	self.value = before .. text .. after
+	self.cursor = self.cursor + text:len()
+
+	self:_triggerUpdate()
 end
 
 --[[
 	Equivalent to pressing the 'backspace' key.
 ]]
 function InputContext.prototype:backspace()
-	local before = self.value:sub(1, self.cursor - 1)
+	local newCursor = math.max(0, self.cursor - 1)
+	local before = self.value:sub(1, newCursor)
 	local after = self.value:sub(self.cursor + 1)
 
 	self.value = before .. after
-	self.cursor = math.max(0, self.cursor - 1)
+	self.cursor = newCursor
 
 	self:_triggerUpdate()
 end
@@ -84,6 +89,14 @@ function InputContext.prototype:forwardDelete()
 	self.value = before .. after
 
 	self:_triggerUpdate()
+end
+
+function InputContext.prototype:moveCursorHome()
+	self:moveCursor(-math.huge)
+end
+
+function InputContext.prototype:moveCursorEnd()
+	self:moveCursor(math.huge)
 end
 
 --[[
