@@ -1,4 +1,6 @@
 # Textbox
+[![Travis CI Build Status](https://api.travis-ci.org/LPGhatguy/textbox.svg?branch=master)](https://travis-ci.org/LPGhatguy/textbox)
+
 Textbox is a library used to manage text box state. It is meant to be used as the input manager for any Lua UI toolkit.
 
 Textbox is based around the lifecycle of `InputContext` objects. One `InputContext` object is intended to map to one text input field. While the input has focus, you should call the `textinput` and `keypressed` methods on the `InputContext` object when appropriate. These correspond to the arguments and semantics of the LÖVE API.
