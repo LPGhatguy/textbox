@@ -98,9 +98,9 @@ function InputContext.prototype:keypressed(key)
 		if (key == "a") then
 			self:selectAll()
 		elseif (key == "c") then
-			love.system.setClipboardText(self:getSelection())
+			love.system.setClipboardText(self:getSelectedText())
 		elseif (key == "x") then
-			love.system.setClipboardText(self:getSelection())
+			love.system.setClipboardText(self:getSelectedText())
 			self:backspace()
 		elseif (key == "v") then
 			local text = love.system.getClipboardText()
@@ -113,8 +113,7 @@ end
 	Inserts the given text at the current cursor position.
 ]]
 function InputContext.prototype:insert(text)
-	local min = math.min(self.cursor, self.selectionEnd)
-	local max = math.max(self.cursor, self.selectionEnd)
+	local min, max = self:getSelectionBounds()
 
 	local before = self.value:sub(1, min)
 	local after = self.value:sub(max + 1)
@@ -126,21 +125,29 @@ function InputContext.prototype:insert(text)
 end
 
 --[[
-	Returns the currently selected text
+	Returns the bounds of the selection
 ]]
-function InputContext.prototype:getSelection()
+function InputContext.prototype:getSelectionBounds()
 	local min = math.min(self.cursor, self.selectionEnd)
 	local max = math.max(self.cursor, self.selectionEnd)
 
-	return self.value:sub(min, max)
+	return min, max
+end
+
+--[[
+	Returns the currently selected text
+]]
+function InputContext.prototype:getSelectedText()
+	local min, max = self:getSelectionBounds()
+
+	return self.value:sub(min + 1, max)
 end
 
 --[[
 	Equivalent to pressing the 'backspace' key.
 ]]
 function InputContext.prototype:backspace()
-	local min = math.min(self.cursor, self.selectionEnd)
-	local max = math.max(self.cursor, self.selectionEnd)
+	local min, max = self:getSelectionBounds()
 
 	if (min == max) then
 		min = math.max(0, min - 1)
@@ -159,8 +166,7 @@ end
 	Equivalent to pressing the 'delete' key.
 ]]
 function InputContext.prototype:forwardDelete()
-	local min = math.min(self.cursor, self.selectionEnd)
-	local max = math.max(self.cursor, self.selectionEnd)
+	local min, max = self:getSelectionBounds()
 
 	if (min == max) then
 		max = max + 1
