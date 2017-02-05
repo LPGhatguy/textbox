@@ -31,4 +31,6 @@ while (true) do
 	print("Please enter a valid demo number, or enter 'q' to quit")
 end
 
+love.keyboard.setKeyRepeat(true)
+
 require("demo." .. demo)(textbox)

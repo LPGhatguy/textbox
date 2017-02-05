@@ -34,3 +34,6 @@ end
 - Explicit UTF-8 support
 - Selection support
 - Multiline editing
+- Shortcuts
+	- Select all
+	- Cut, Copy, Paste

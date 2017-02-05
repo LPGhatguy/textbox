@@ -3,9 +3,11 @@ local InputContext = {
 }
 
 function InputContext:new(value)
+	value = value or ""
+
 	local new = setmetatable({
-		value = value or "",
-		cursor = 0,
+		value = value,
+		cursor = value:len(),
 		onUpdate = nil
 	}, {
 		__index = InputContext.prototype
@@ -33,6 +35,8 @@ end
 function InputContext.prototype:keypressed(key)
 	if (key == "backspace") then
 		self:backspace()
+	elseif (key == "delete") then
+		self:forwardDelete()
 	elseif (key == "left") then
 		self:moveCursor(-1)
 	elseif (key == "right") then
@@ -46,6 +50,15 @@ function InputContext.prototype:backspace()
 
 	self.value = before .. after
 	self.cursor = math.max(0, self.cursor - 1)
+
+	self:_triggerUpdate()
+end
+
+function InputContext.prototype:forwardDelete()
+	local before = self.value:sub(1, self.cursor)
+	local after = self.value:sub(self.cursor + 2)
+
+	self.value = before .. after
 
 	self:_triggerUpdate()
 end
