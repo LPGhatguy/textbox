@@ -1,7 +1,7 @@
 local textbox = require("textbox")
 local InputContext = textbox.InputContext
 
-describe("hotkeys", function()
+describe("editor operations", function()
 	it("should backspace", function()
 		local context = InputContext("Hello")
 
