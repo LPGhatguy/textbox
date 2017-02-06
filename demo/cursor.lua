@@ -23,7 +23,7 @@ return function(textbox)
 			local minPos = x + font:getWidth(beforeMin)
 			local selectedWidth = font:getWidth(context:getSelectedText())
 
-			love.graphics.setColor(64, 64, 64)
+			love.graphics.setColor(64, 64, 200)
 			love.graphics.rectangle("fill",
 				minPos, y,
 				selectedWidth, font:getHeight()

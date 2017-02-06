@@ -1,0 +1,7 @@
+{
+	"name": "textbox",
+	"author": "LPGhatguy",
+	"version": "0.1.0",
+	"main": "textbox/init.lua",
+	"defaultTag": "master"
+}
