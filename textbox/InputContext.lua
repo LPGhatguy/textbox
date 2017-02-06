@@ -45,7 +45,7 @@ end
 
 function InputContext.prototype:_isMetaDown()
 	if (InputContext.platform == "OS X") then
-		return love.keyboard.isDown("lgui", "gui")
+		return love.keyboard.isDown("lgui", "rgui")
 	end
 
 	return love.keyboard.isDown("lctrl", "rctrl")
