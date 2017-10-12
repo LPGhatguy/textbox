@@ -21,7 +21,7 @@ install:
   - luarocks install luacov-coveralls
 
 script:
-  - busted -p .lua -m "`pwd`/?/init.lua" --verbose spec
+  - busted -p .lua -m "`pwd`/?/init.lua" --coverage --verbose spec
 
 after_success:
   - luacov-coveralls -e $TRAVIS_BUILD_DIR/lua_install
